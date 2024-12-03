@@ -1,21 +1,18 @@
-// src/pages/MoviesPage/MoviesPage.jsx
-
 import React, { useState } from 'react';
-import { searchMovies } from '../../api/tmdb';
-import MovieList from '../../components/MovieList/MovieList';
+import { Link } from 'react-router-dom';
+import { searchMovies } from '../api/tmdb';
 
 const MoviesPage = () => {
   const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      setLoading(true);
-      const foundMovies = await searchMovies(query);
-      setMovies(foundMovies);
-      setLoading(false);
+    try {
+      const results = await searchMovies(query);
+      setMovies(results);
+    } catch (error) {
+      console.error('Error searching movies:', error);
     }
   };
 
@@ -25,14 +22,19 @@ const MoviesPage = () => {
       <form onSubmit={handleSearch}>
         <input
           type="text"
+          placeholder="Enter movie name"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for movies"
         />
         <button type="submit">Search</button>
       </form>
-      {loading && <div>Loading...</div>}
-      <MovieList movies={movies} />
+      <ul>
+        {movies.map((movie) => (
+          <li key={movie.id}>
+            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
