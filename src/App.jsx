@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './components/HomePage/HomePage';
-import MoviesPage from './components/MoviesPage/MoviesPage';
-import MovieDetailsPage from './components/MovieDetailsPage/MovieDetailsPage';
+import HomePage from './pages/HomePage/HomePage';
+import MoviesPage from './pages/MoviesPage/MoviesPage';
+import MovieDetailsPage from './pages/MovieDetailsPage/MovieDetailsPage';
 import Cast from './components/Cast/Cast';
 import Reviews from './components/Reviews/Reviews';
 import Navigation from './components/Navigation/Navigation';

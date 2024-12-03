@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getTrendingMovies } from '../api/tmdb';
+import { getTrendingMovies } from '../../components/api/tmdb';
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
