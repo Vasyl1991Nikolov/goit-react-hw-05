@@ -1,25 +1,35 @@
 // src/App.jsx
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navigation from './components/Navigation/Navigation';
-import HomePage from './pages/HomePage/HomePage';
-import MoviesPage from './pages/MoviesPage/MoviesPage';
-import MovieDetailsPage from './pages/MovieDetailsPage/MovieDetailsPage';
-import Cast from './pages/Cast/Cast';
-import Reviews from './pages/Reviews/Reviews';
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navigation from "./components/Navigation/Navigation";
+
+// Ледачі завантаження компонентів
+const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
+const MoviesPage = lazy(() => import("./pages/MoviesPage/MoviesPage"));
+const MovieDetailsPage = lazy(() => import("./pages/MovieDetailsPage/MovieDetailsPage"));
+const MovieCast = lazy(() => import("./pages/MovieCast/MovieCast"));
+const MovieReviews = lazy(() => import("./pages/MovieReviews/MovieReviews"));
 
 function App() {
   return (
     <Router>
       <Navigation />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/movies" element={<MoviesPage />} />
-        <Route path="/movies/:movieId" element={<MovieDetailsPage />}>
-          <Route path="cast" element={<Cast />} />
-          <Route path="reviews" element={<Reviews />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<div>Завантаження...</div>}>
+        <Routes>
+          {/* Головна сторінка */}
+          <Route path="/" element={<HomePage />} />
+          {/* Сторінка пошуку фільмів */}
+          <Route path="/movies" element={<MoviesPage />} />
+          {/* Сторінка деталей фільму */}
+          <Route path="/movies/:movieId" element={<MovieDetailsPage />}>
+            {/* Вкладені маршрути */}
+            <Route path="cast" element={<MovieCast />} />
+            <Route path="reviews" element={<MovieReviews />} />
+          </Route>
+          {/* Сторінка 404 */}
+          <Route path="*" element={<div>Сторінка не знайдена</div>} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

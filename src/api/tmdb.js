@@ -20,18 +20,24 @@ export async function fetchMovieDetails(movieId) {
   return response.json();
 }
 
+
 export async function fetchMovieCast(movieId) {
-  const response = await fetch(`${BASE_URL}/movie/${movieId}/credits?api_key=${API_KEY}`);
-  if (!response.ok) {
-    throw new Error('Ошибка при загрузке состава');
-  }
-  return response.json();
+  const response = await axios.get(`${BASE_URL}/movie/${movieId}/credits`, {
+    params: { api_key: API_KEY },
+  });
+  return response.data;
 }
 
 export async function fetchMovieReviews(movieId) {
-  const response = await fetch(`${BASE_URL}/movie/${movieId}/reviews?api_key=${API_KEY}`);
+  const response = await axios.get(`${BASE_URL}/movie/${movieId}/reviews`, {
+    params: { api_key: API_KEY },
+  });
+  return response.data;
+}
+export const fetchMoviesByQuery = async (query) => {
+  const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
   if (!response.ok) {
-    throw new Error('Ошибка при загрузке отзывов');
+    throw new Error("Помилка під час завантаження даних.");
   }
   return response.json();
-}
+};

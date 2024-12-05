@@ -1,12 +1,17 @@
-// src/pages/MovieDetailsPage/MovieDetailsPage.jsx
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, Outlet } from 'react-router-dom';
-import { fetchMovieDetails } from '../../api/tmdb';
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { fetchMovieDetails } from "../../api/tmdb";
 
 function MovieDetailsPage() {
   const { movieId } = useParams();
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(null);
+
+  const location = useLocation(); // Поточне розташування
+  const navigate = useNavigate(); // Для кнопки "Go back"
+
+  // Використовуємо useRef для збереження початкового значення location.state
+  const backLinkRef = useRef(location.state?.from || "/");
 
   useEffect(() => {
     fetchMovieDetails(movieId)
@@ -15,11 +20,11 @@ function MovieDetailsPage() {
   }, [movieId]);
 
   if (error) {
-    return <div>Ошибка: {error}</div>;
+    return <div>Помилка: {error}</div>;
   }
 
   if (!movie) {
-    return <div>Загрузка...</div>;
+    return <div>Завантаження...</div>;
   }
 
   const {
@@ -37,39 +42,51 @@ function MovieDetailsPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: '20px' }}>
-        <img src={posterUrl} alt={title} style={{ width: '300px' }} />
+      {/* Кнопка "Go back" */}
+      <button
+        onClick={() => navigate(backLinkRef.current)}
+        style={{ marginBottom: "20px" }}
+      >
+        Go back
+      </button>
+
+      <div style={{ display: "flex", gap: "20px" }}>
+        <img src={posterUrl} alt={title} style={{ width: "300px" }} />
         <div>
           <h1>{title}</h1>
           <p>
-            <strong>Оригинальное название:</strong> {original_title}
+            <strong>Оригінальна назва:</strong> {original_title}
           </p>
           <p>
-            <strong>Дата релиза:</strong> {release_date}
+            <strong>Дата релізу:</strong> {release_date}
           </p>
           <p>
-            <strong>Продолжительность:</strong> {runtime} минут
+            <strong>Тривалість:</strong> {runtime} хвилин
           </p>
           <p>
             <strong>Рейтинг:</strong> {vote_average}/10
           </p>
           <p>
-            <strong>Жанры:</strong> {genres.map((genre) => genre.name).join(', ')}
+            <strong>Жанри:</strong> {genres.map((genre) => genre.name).join(", ")}
           </p>
           <p>
-            <strong>Описание:</strong> {overview}
+            <strong>Опис:</strong> {overview}
           </p>
         </div>
       </div>
 
-      <div style={{ marginTop: '20px' }}>
-        <h2>Дополнительно</h2>
+      <div style={{ marginTop: "20px" }}>
+        <h2>Додатково</h2>
         <ul>
           <li>
-            <Link to="cast">Cast</Link>
+            <Link to="cast" state={{ from: backLinkRef.current }}>
+              Cast
+            </Link>
           </li>
           <li>
-            <Link to="reviews">Reviews</Link>
+            <Link to="reviews" state={{ from: backLinkRef.current }}>
+              Reviews
+            </Link>
           </li>
         </ul>
         <Outlet />
