@@ -1,13 +1,16 @@
+// src/components/Navigation/Navigation.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
-const Navigation = () => {
+function Navigation() {
   return (
-    <nav style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
-      <Link to="/" style={{ marginRight: '15px' }}>Home</Link>
-      <Link to="/movies">Movies</Link>
+    <nav>
+      <NavLink to="/" end>
+        Главная
+      </NavLink>
+      <NavLink to="/movies">Фильмы</NavLink>
     </nav>
   );
-};
+}
 
 export default Navigation;

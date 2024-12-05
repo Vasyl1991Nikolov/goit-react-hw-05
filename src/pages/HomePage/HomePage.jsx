@@ -1,35 +1,28 @@
+// src/pages/HomePage/HomePage.jsx
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getTrendingMovies } from '../../components/api/tmdb';
+import { fetchMovies } from '../../api/tmdb';
+import MovieList from '../../components/MovieList/MovieList';
 
-const HomePage = () => {
+function HomePage() {
   const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchTrendingMovies = async () => {
-      try {
-        const trendingMovies = await getTrendingMovies();
-        setMovies(trendingMovies);
-      } catch (error) {
-        console.error('Error fetching trending movies:', error);
-      }
-    };
-
-    fetchTrendingMovies();
+    fetchMovies('popular')
+      .then((data) => setMovies(data.results))
+      .catch((err) => setError(err.message));
   }, []);
+
+  if (error) {
+    return <div>Ошибка: {error}</div>;
+  }
 
   return (
     <div>
-      <h1>Trending Movies</h1>
-      <ul>
-        {movies.map((movie) => (
-          <li key={movie.id}>
-            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
-          </li>
-        ))}
-      </ul>
+      <h1>Популярные фильмы</h1>
+      <MovieList movies={movies} />
     </div>
   );
-};
+}
 
 export default HomePage;

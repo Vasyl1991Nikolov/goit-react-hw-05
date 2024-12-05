@@ -1,42 +1,33 @@
+// src/pages/MoviesPage/MoviesPage.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { searchMovies } from '../../components/api/tmdb';
+import { fetchMovies } from '../../api/tmdb';
+import MovieList from '../../components/MovieList/MovieList';
 
-const MoviesPage = () => {
+function MoviesPage() {
   const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(null);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    try {
-      const results = await searchMovies(query);
-      setMovies(results);
-    } catch (error) {
-      console.error('Error searching movies:', error);
-    }
+  const handleSearch = () => {
+    fetchMovies(query)
+      .then((data) => setMovies(data.results))
+      .catch((err) => setError(err.message));
   };
 
   return (
     <div>
-      <h1>Search Movies</h1>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Enter movie name"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button type="submit">Search</button>
-      </form>
-      <ul>
-        {movies.map((movie) => (
-          <li key={movie.id}>
-            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
-          </li>
-        ))}
-      </ul>
+      <h1>Поиск фильмов</h1>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Введите название фильма"
+      />
+      <button onClick={handleSearch}>Искать</button>
+      {error && <div>Ошибка: {error}</div>}
+      <MovieList movies={movies} />
     </div>
   );
-};
+}
 
 export default MoviesPage;
